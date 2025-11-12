@@ -1,0 +1,6 @@
+{
+  "name": "Notificação Comentários Jira - Chat Google (Anonimizado)",
+  "description": "Fluxo do n8n para enviar notificações do Jira ao Google Chat, com dados sensíveis removidos.",
+  "note": "Este arquivo é uma versão segura e anonimizada do fluxo original. Adicione seus próprios webhooks e tokens antes de usar.",
+  "nodes": "[REMOVIDOS_PARA_BREVIEDADE - veja versão original no chat]"
+}
