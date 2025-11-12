@@ -1,6 +1,385 @@
 {
-  "name": "Notificação Comentários Jira - Chat Google (Anonimizado)",
-  "description": "Fluxo do n8n para enviar notificações do Jira ao Google Chat, com dados sensíveis removidos.",
-  "note": "Este arquivo é uma versão segura e anonimizada do fluxo original. Adicione seus próprios webhooks e tokens antes de usar.",
-  "nodes": "[REMOVIDOS_PARA_BREVIEDADE - veja versão original no chat]"
+  "name": "Notificação Comentários Jira - Chat Google",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "[WEBHOOK_PATH_ID]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        16
+      ],
+      "id": "e85e2fd9-c539-4a5f-9ba7-6377089b1eee",
+      "name": "Webhook",
+      "webhookId": "[WEBHOOK_PATH_ID]"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/[ID_ESPACO_1]/messages?key=[CHAVE_API]&token=[TOKEN_1]",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.chatMessage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        -80
+      ],
+      "id": "fd8b66c7-9aa0-4705-b3ef-b720580e2545",
+      "name": "HTTP Request - Usuário 1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.issueAssignee }}",
+                    "rightValue": "Usuário 1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "4560b716-9c04-4fa1-883e-48a1257536d5"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "092cb03c-80e3-4ad8-904f-6764c1dd3d9b",
+                    "leftValue": "={{ $json.body.issueAssignee }}",
+                    "rightValue": "Usuário 2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d2bc7b88-c80b-4b58-9f0e-8c8603cbfb0e",
+                    "leftValue": "={{ $json.body.issueAssignee }}",
+                    "rightValue": "Usuário 3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "12b6483e-c62f-4ae3-8a54-360c5ebce86f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/[ID_ESPACO_2]/messages?key=[CHAVE_API]&token=[TOKEN_2]",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.chatMessage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        64
+      ],
+      "id": "483d25c8-8132-44e3-9b7c-2e6fd8aaac1f",
+      "name": "HTTP Request - Usuário 2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://chat.googleapis.com/v1/spaces/[ID_ESPACO_3]/messages?key=[CHAVE_API]&token=[TOKEN_3]",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.chatMessage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        640,
+        208
+      ],
+      "id": "6167bbe8-582a-4224-897a-52351bce7c14",
+      "name": "HTTP Request - Usuário 3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aeed502f-5a3d-4459-971e-48f43ec2a240",
+              "name": "chatMessage",
+              "value": "=🔥 *Atualização no seu chamado!* 🔥\nO ticket *{{ $json.body.issueKey }}* ({{ $json.body.issueSummary }}) recebeu um novo comentário.\nClique no link abaixo para acessar o chamado:\n👉 {{ $json.body.issueLink }}\nStatus: {{ $json.body.issueStatus }}",
+              "type": "string"
+            },
+            {
+              "id": "be2a2711-9d40-43d4-a1c5-288836154e2e",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        48
+      ],
+      "id": "dd98ee1f-2f91-4fba-9ec1-0e5d1f1319ec",
+      "name": "Texto"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aeed502f-5a3d-4459-971e-48f43ec2a240",
+              "name": "chatMessage",
+              "value": "=🔥 *Atualização no seu chamado!* 🔥\nO ticket *{{ $json.body.issueKey }}* ({{ $json.body.issueSummary }}) recebeu um novo comentário.\nClique no link abaixo para acessar o chamado:\n👉 {{ $json.body.issueLink }}\nStatus: {{ $json.body.issueStatus }}",
+              "type": "string"
+            },
+            {
+              "id": "be2a2711-9d40-43d4-a1c5-288836154e2e",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        -80
+      ],
+      "id": "543087ed-f7f1-4160-b9ab-5656c0900b79",
+      "name": "Texto1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aeed502f-5a3d-4459-971e-48f43ec2a240",
+              "name": "chatMessage",
+              "value": "=🔥 *Atualização no seu chamado!* 🔥\nO ticket *{{ $json.body.issueKey }}* ({{ $json.body.issueSummary }}) recebeu um novo comentário.\nClique no link abaixo para acessar o chamado:\n👉 {{ $json.body.issueLink }}\nStatus: {{ $json.body.issueStatus }}",
+              "type": "string"
+            },
+            {
+              "id": "be2a2711-9d40-43d4-a1c5-288836154e2e",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        192
+      ],
+      "id": "99944435-e989-4bb5-8682-be1377acedd4",
+      "name": "Texto2"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "primary-production-9c4c.up.railway.app",
+            "user-agent": "Automation for Jira AC app/1.0;730fe477-f1dc-42df-91f3-219914b78b93",
+            "content-length": "300",
+            "accept": "application/json; charset=UTF-8, */*;q=0.8",
+            "accept-encoding": "gzip,deflate",
+            "content-type": "application/json",
+            "x-b3-sampled": "0",
+            "x-b3-spanid": "cd629a82cf45bb6f",
+            "x-b3-traceid": "92ff9c4d6607d1a9358037573b26bb46",
+            "x-forwarded-for": "104.192.142.251",
+            "x-forwarded-host": "primary-production-9c4c.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/us-east4-eqdc4a",
+            "x-railway-request-id": "VZ3xK7iuQeqd9KDGAax-fw",
+            "x-real-ip": "104.192.142.251",
+            "x-request-start": "1761743416376"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "issueKey": "STI-18450",
+            "issueSummary": "Teste Notificação Jira",
+            "issueStatus": "Aberto",
+            "issueLink": "https://suporteinternobeleze.atlassian.net/browse/STI-18450",
+            "issueAssignee": "Usuário 3",
+            "issueReporter": "Usuário 1",
+            "issueAssigneeEmail": "usuario3@exemplo.com.br"
+          },
+          "webhookUrl": "https://primary-production-9c4c.up.railway.app/webhook-test/[WEBHOOK_PATH_ID]",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Texto1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Texto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Texto2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texto": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Usuário 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texto1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Usuário 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texto2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Usuário 3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fcb64e09-c88d-4317-af6e-69ad122a6681",
+  "meta": {
+    "instanceId": "8bd66ebac69ea0257695ec8398878a14a360c810f45e6591a51698aef3dbe7b6"
+  },
+  "id": "bg2qh5qOdmwXWGdx",
+  "tags": []
 }
