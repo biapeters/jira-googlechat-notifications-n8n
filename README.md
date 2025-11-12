@@ -38,12 +38,6 @@ Status: **Aberto**
 
 ---
 
-## 👥 Autores  
-- **Bianca Peters** – Automação n8n e integração Jira / Google Chat  
-- **Skelt Tecnologia**
-
----
-
 ## 🧰 Tecnologias utilizadas  
 - [n8n.io](https://n8n.io)  
 - Jira Automation  
